@@ -16,7 +16,7 @@ function auth(req, res, next) {
   if (authToken != undefined) {
 
     const bearer = authToken.split(' ');
-    var token = bearer[1];
+    const token = bearer[1];
 
     jwt.verify(token, jwtSecret, (err, data) => {
       if (err) {
@@ -39,7 +39,7 @@ function auth(req, res, next) {
 
 }
 
-var DB = {
+const DB = {
   games: [
     {
       id: 0,
@@ -87,9 +87,9 @@ app.get("/games/:id", auth, (req, res) => {
     res.sendStatus(400);
   } else {
 
-    var id = parseInt(req.params.id);
+    const id = parseInt(req.params.id);
 
-    var game = DB.games.find(g => g.id == id);
+    const game = DB.games.find(g => g.id == id);
 
     if (game != undefined) {
       res.statusCode = 200;
@@ -101,7 +101,7 @@ app.get("/games/:id", auth, (req, res) => {
 });
 
 app.post("/games", auth, (req, res) => {
-  var { title, price, year } = req.body;
+  const { title, price, year } = req.body;
   const game = {
     title, price, year, id: DB.games.length + 1
   }
@@ -114,8 +114,8 @@ app.delete("/games/:id", auth, (req, res) => {
   if (isNaN(req.params.id)) {
     res.sendStatus(400);
   } else {
-    var id = parseInt(req.params.id);
-    var index = DB.games.findIndex(g => g.id == id);
+    const id = parseInt(req.params.id);
+    const index = DB.games.findIndex(g => g.id == id);
 
     if (index == -1) {
       res.sendStatus(404);
@@ -130,40 +130,32 @@ app.put("/games/:id", auth, (req, res) => {
   if (isNaN(req.params.id)) {
     res.sendStatus(400);
   } else {
-    var id = parseInt(req.params.id);
+    const id = parseInt(req.params.id);
 
-    var game = DB.games.find(g => g.id == id);
-
+    const game = DB.games.find(g => g.id == id);
     if (game != undefined) {
-
-      var { title, price, year } = req.body;
-
+      const { title, price, year } = req.body;
       if (title != undefined) {
         game.title = title;
       }
-
       if (price != undefined) {
         game.price = price;
       }
-
       if (year != undefined) {
         game.year = year;
       }
-
       res.sendStatus(200);
-
     } else {
       res.sendStatus(404);
     }
   }
-
 });
 
 app.post("/auth", (req, res) => {
-  var { email, password } = req.body;
+  const { email, password } = req.body;
 
   if (email != undefined) {
-    var user = DB.users.find(u => u.email == email);
+    const user = DB.users.find(u => u.email == email);
     if (user != undefined) {
       if (user.password == password) {
         jwt.sign({ id: user.id, email: user.email }, jwtSecret, { expiresIn: '48h' }, (err, token) => {
