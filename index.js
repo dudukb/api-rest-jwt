@@ -25,7 +25,6 @@ function auth(req, res, next) {
       } else {
         req.token = token;
         req.loggedUser = { id: data.id, email: data.email };
-        console.log(data);
         next();
       }
     });
@@ -34,9 +33,6 @@ function auth(req, res, next) {
     res.status(401);
     res.json({ err: "Token inválido!" })
   }
-
-  console.log(authToken);
-
 }
 
 const DB = {
@@ -75,6 +71,36 @@ const DB = {
     }
   ]
 }
+
+app.post("/auth", (req, res) => {
+  const { email, password } = req.body;
+
+  if (email != undefined) {
+    const user = DB.users.find(u => u.email == email);
+    if (user != undefined) {
+      if (user.password == password) {
+        jwt.sign({ id: user.id, email: user.email }, jwtSecret, { expiresIn: '48h' }, (err, token) => {
+          if (err) {
+            res.status(400);
+            res.json({ err: "Falha Interna" })
+          } else {
+            res.status(200);
+            res.json({ token: token });
+          }
+        })
+
+      } else {
+        res.status(401);
+        res.json({ err: "Credenciais inválidas" })
+      }
+    } else {
+      res.status(404);
+    }
+  } else {
+    res.status(400);
+    res.json({ err: "O E-mail inviado é inválido!" })
+  }
+});
 
 app.get("/games", auth, (req, res) => {
 
@@ -150,37 +176,6 @@ app.put("/games/:id", auth, (req, res) => {
     }
   }
 });
-
-app.post("/auth", (req, res) => {
-  const { email, password } = req.body;
-
-  if (email != undefined) {
-    const user = DB.users.find(u => u.email == email);
-    if (user != undefined) {
-      if (user.password == password) {
-        jwt.sign({ id: user.id, email: user.email }, jwtSecret, { expiresIn: '48h' }, (err, token) => {
-          if (err) {
-            res.status(400);
-            res.json({ err: "Falha Interna" })
-          } else {
-            res.status(200);
-            res.json({ token: token });
-          }
-        })
-
-      } else {
-        res.status(401);
-        res.json({ err: "Credenciais inválidas" })
-      }
-    } else {
-      res.status(404);
-    }
-  } else {
-    res.status(400);
-    res.json({ err: "O E-mail inviado é inválido!" })
-  }
-});
-
 
 app.listen(45678, () => {
   console.log("API RODANDO!");
