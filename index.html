@@ -27,10 +27,8 @@
     </head>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-
         var axiosConfig = {
             headers: {
-
 
             }
         }
@@ -42,28 +40,17 @@
             var email = emailField.value;
             var password = passwordField.value;
 
-            //     axios.post("http://localhost:45678/auth",axiosConfig,{
-            //         email,
-            //         password
-            //     }).then(res =>{
-            //         alert("LOGADOOOOOO")
-            //     }).catch(err =>{
-            //         alert("Login incorreto...")
-            //     })
+            axios.post("http://localhost:45678/auth", {
+                email,
+                password
+            }).then(res => {
+                alert("LOGADOOOOOO")
+            }).catch(err => {
+                alert("Login incorreto...")
+            })
 
-            // }
-            axios({
-                method: 'post',
-                url: 'http://localhost:45678/auth',
-                headers: {
-                    Authorization: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJlZHVhcmRvc2FudG9zQGdtYWlsLmNvbSIsImlhdCI6MTYxMzQxODcyMSwiZXhwIjoxNjEzNTkxNTIxfQ.7D9VwKKrOR6Wk_y4GC2md_Cts6wZgHd9U7ibLvFBtII"
-                },
-                data: {
-                    email: email,
-                    password: password
-                }
-            });
         }
+
 
         function createGame() {
             var titleInput = document.getElementById("title");
