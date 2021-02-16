@@ -63,10 +63,9 @@
                 year: yearInput.value,
                 price: priceInput.value
             }
-            axios.post("http://localhost:45678/game", game).then((response) => {
-                if (response.status == 200) {
-                    alert("Game cadastrado")
-                }
+            axios.post("http://localhost:45678/games", game, axiosConfig).then((response) => {
+                gamesList.push(response.data)
+                updateList()
             }).catch(err => {
                 console.log(err)
             });
@@ -92,7 +91,7 @@
 
         function updateList() {
             var list = document.getElementById("games");
-            list.innerHTML=""
+            list.innerHTML = ""
 
             gamesList.forEach(game => {
                 var item = document.createElement("li");
