@@ -10,8 +10,8 @@
 
 <body>
     <h2>Login</h2>
-    <input type="text" name="email" id="email" placeholder="eduardosantos@email.com">
-    <input type="text" name="password" id="password" placeholder="*********************">
+    <input type="text" name="email" id="email" placeholder="eduardosantos@email.com" value="guigg@gmail.com">
+    <input type="text" name="password" id="password" placeholder="*********************" value="java123">
     <button onclick="login()">Entrar</button>
 
 
@@ -44,9 +44,9 @@
                 email,
                 password
             }).then(res => {
-                alert("LOGADOOOOOO")
+                axiosConfig.headers.authorization = `Bearer ${res.data.token}`
+                listGames();
             }).catch(err => {
-                alert("Login incorreto...")
             })
 
         }
@@ -79,36 +79,39 @@
                 console.log(err);
             })
         }
+        function listGames() {
 
-        axios.get("http://localhost:45678/games", axios).then(response => {
-            var games = response.data;
-            var list = document.getElementById("games");
 
-            games.forEach(game => {
-                var item = document.createElement("li");
+            axios.get("http://localhost:45678/games", axiosConfig).then(response => {
+                var { games } = response.data;
+                var list = document.getElementById("games");
 
-                item.setAttribute("data-id", game.id);
-                item.setAttribute("data-title", game.title);
-                item.setAttribute("data-year", game.year);
-                item.setAttribute("data-price", game.price);
+                games.forEach(game => {
+                    var item = document.createElement("li");
 
-                item.innerHTML = game.id + ' - ' + game.title + ' $' + game.price;
+                    item.setAttribute("data-id", game.id);
+                    item.setAttribute("data-title", game.title);
+                    item.setAttribute("data-year", game.year);
+                    item.setAttribute("data-price", game.price);
 
-                var deleteBtn = document.createElement("button");
-                deleteBtn.innerHTML = "Deletar";
-                deleteBtn.addEventListener("click", function () {
-                    deleteGame(item)
+                    item.innerHTML = game.id + ' - ' + game.title + ' $' + game.price;
+
+                    var deleteBtn = document.createElement("button");
+                    deleteBtn.innerHTML = "Deletar";
+                    deleteBtn.addEventListener("click", function () {
+                        deleteGame(item)
+                    });
+
+                    item.appendChild(deleteBtn);
+
+
+
+                    list.appendChild(item);
                 });
-
-                item.appendChild(deleteBtn);
-
-
-
-                list.appendChild(item);
+            }).catch(error => {
+                console.log(error);
             });
-        }).catch(error => {
-            console.log(error);
-        });
+        }
 
     </script>
 
