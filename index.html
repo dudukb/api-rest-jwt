@@ -27,6 +27,7 @@
     </head>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
+        let gamesList = [];
         var axiosConfig = {
             headers: {
 
@@ -80,36 +81,34 @@
             })
         }
         function listGames() {
-
-
             axios.get("http://localhost:45678/games", axiosConfig).then(response => {
                 var { games } = response.data;
-                var list = document.getElementById("games");
-
-                games.forEach(game => {
-                    var item = document.createElement("li");
-
-                    item.setAttribute("data-id", game.id);
-                    item.setAttribute("data-title", game.title);
-                    item.setAttribute("data-year", game.year);
-                    item.setAttribute("data-price", game.price);
-
-                    item.innerHTML = game.id + ' - ' + game.title + ' $' + game.price;
-
-                    var deleteBtn = document.createElement("button");
-                    deleteBtn.innerHTML = "Deletar";
-                    deleteBtn.addEventListener("click", function () {
-                        deleteGame(item)
-                    });
-
-                    item.appendChild(deleteBtn);
-
-
-
-                    list.appendChild(item);
-                });
+                gamesList = games;
+                updateList()
             }).catch(error => {
                 console.log(error);
+            });
+        }
+
+        function updateList() {
+            var list = document.getElementById("games");
+            list.innerHTML=""
+
+            gamesList.forEach(game => {
+                var item = document.createElement("li");
+                item.setAttribute("data-id", game.id);
+                item.setAttribute("data-title", game.title);
+                item.setAttribute("data-year", game.year);
+                item.setAttribute("data-price", game.price);
+                item.innerHTML = game.id + ' - ' + game.title + ' $' + game.price;
+                var deleteBtn = document.createElement("button");
+                deleteBtn.innerHTML = "Deletar";
+                deleteBtn.addEventListener("click", function () {
+                    deleteGame(item)
+                });
+
+                item.appendChild(deleteBtn);
+                list.appendChild(item);
             });
         }
 
