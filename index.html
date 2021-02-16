@@ -71,10 +71,11 @@
             });
         }
 
-        function deleteGame(listItem) {
+        function deleteGame(listItem, index) {
             var id = listItem.getAttribute("data-id");
             axios.delete("http://localhost:45678/games/" + id, axiosConfig).then((response) => {
-                listItem.parentNode.removeChild(listItem);
+                gamesList.splice(index, 1);
+                updateList()
             }).catch(err => {
                 console.log(err);
             })
@@ -93,7 +94,7 @@
             var list = document.getElementById("games");
             list.innerHTML = ""
 
-            gamesList.forEach(game => {
+            gamesList.map((game, index) => {
                 var item = document.createElement("li");
                 item.setAttribute("data-id", game.id);
                 item.setAttribute("data-title", game.title);
@@ -103,7 +104,7 @@
                 var deleteBtn = document.createElement("button");
                 deleteBtn.innerHTML = "Deletar";
                 deleteBtn.addEventListener("click", function () {
-                    deleteGame(item)
+                    deleteGame(item, index)
                 });
 
                 item.appendChild(deleteBtn);
